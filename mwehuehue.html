@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayo Kenalan!</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .bg-emoji {
+            position: fixed;
+            font-size: 2rem;
+            opacity: 0.3;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .card {
+            background: white;
+            padding: 35px 30px;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            animation: popIn 0.6s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            color: #e84393;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        p {
+            color: #636e72;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 3px solid #fab1a0;
+            border-radius: 15px;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+            margin-bottom: 15px;
+        }
+
+        input:focus {
+            border-color: #e84393;
+            box-shadow: 0 0 15px rgba(232, 67, 147, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #e84393, #fd79a8);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(232, 67, 147, 0.4);
+        }
+
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.5s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .options { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .btn-mau { background: linear-gradient(135deg, #00b894, #55efc4); }
+        .btn-gak { background: linear-gradient(135deg, #636e72, #b2bec3); }
+
+        .quiz-option {
+            background: #ffeaa7;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .quiz-option:hover { background: #fdcb6e; transform: scale(1.05); }
+
+        .emoji { font-size: 3rem; margin: 10px 0; animation: bounce 1s infinite; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        const EMAILJS_CONFIG = {
+            publicKey: "NrGWBxQIGbqh8GdNe",        
+            serviceId: "service_r4upsr5",          
+            templateId: "template_i205qdh"         
+        };
+    </script>
+    <!-- ============================================= -->
+
+    <div class="bg-emoji" style="top: 10%; left: 10%;">💕</div>
+    <div class="bg-emoji" style="top: 20%; right: 15%;">❤️</div>
+    <div class="bg-emoji" style="top: 70%; left: 20%;">💖</div>
+    <div class="bg-emoji" style="top: 80%; right: 10%;">💗</div>
+
+    <div class="card">
+        <!-- Section 1: Nama Sendiri -->
+        <div class="section active" id="sec-1">
+            <h1>Halo! 👋</h1>
+            <p>Kenalan dulu dong!<br>Nama kamu siapa?</p>
+            <input type="text" id="myName" placeholder="Nama kamu...">
+            <br>
+            <button class="btn" onclick="next(1)">Lanjut ➡️</button>
+        </div>
+
+        <!-- Section 2: Aktivitas -->
+        <div class="section" id="sec-2">
+            <h1>Oke, <span id="name-1"></span>! 😅</h1>
+            <p>Sekarang belajar dulu...</p>
+            <div class="emoji">🤔</div>
+            <p><strong>Sekarang sibuk apa?</strong></p>
+            <div class="options">
+                <button class="quiz-option" onclick="pilih('sekolah')">📚 sekolah</button>
+                <button class="quiz-option" onclick="pilih('Kerja')">💼 Kerja</button>
+                <button class="quiz-option" onclick="pilih('Nganggur')">🎮 Nganggur</button>
+            </div>
+        </div>
+
+        <!-- Section 3: Instagram -->
+        <div class="section" id="sec-3">
+            <h1>Wah, jarang! 🔥</h1>
+            <p>Sekarang IG-nya boleh dong...</p>
+            <div class="emoji">📱</div>
+            <p>Username Instagram kamu?<br><small>(Biar bisa chat di DM)</small></p>
+            <input type="text" id="igUsername" placeholder="@username_ig">
+            <br>
+            <button class="btn" onclick="nextIG()">Simpan & Lanjut ➡️</button>
+        </div>
+
+        <!-- Section 4: Ajak Kenalan -->
+        <div class="section" id="sec-4">
+            <h1>Hey <span id="name-2"></span>! 💫</h1>
+            <p>Sekarang aku mau ngajak kamu...</p>
+            <div class="emoji">🥺</div>
+            <p style="font-weight: 600; color: #e84393;">
+                Mau ga kita chat-barengan?<br>
+                Mau sekadar ngobrol, curhat, atau<br>cerita apapun boleh!
+            </p>
+            <div class="options">
+                <button class="btn btn-mau" id="btn-mau" onmouseover="moveMau()" onclick="terima()">MAU! 😍</button>
+                <button class="btn btn-gak" id="btn-gak" onmouseover="moveGak()" onclick="tolak()">Gak Mau 😕</button>
+            </div>
+        </div>
+
+        <!-- Success -->
+        <div class="section" id="sec-success">
+            <div class="emoji">🎉🥳🎉</div>
+            <h1>SIAP!</h1>
+            <p><strong>Kamu mau kenalan!</strong></p>
+            <p>IG: @<span id="success-ig"></span><br>Tungguaku DM ya! 😊</p>
+            <button class="btn" onclick="reset()">Kenalan Lagi 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        let namaSaya = "";
+        let aktivitas = "";
+        let usernameIG = "";
+        let failCount = 0;
+
+        // Initialize EmailJS
+        if(EMAILJS_CONFIG.publicKey !== "NrGWBxQIGbqh8GdNe") {
+            emailjs.init(EMAILJS_CONFIG.publicKey);
+        }
+
+        // Navigation
+        function next(step) {
+            if(step === 1) {
+                namaSaya = document.getElementById('myName').value;
+                if(namaSaya.trim() === "") {
+                    alert("⚠️ Woi woi, nama siapa belum diisi! 😳\nTulis dulu dong!");
+                    document.getElementById('myName').focus();
+                    return;
+                }
+                alert("🎉 HALO " + namaSaya.toUpperCase() + "!\n\nLanjuttt! Sekarang apa kabar?");
+                document.getElementById('name-1').innerText = namaSaya;
+                document.getElementById('name-2').innerText = namaSaya;
+                go(2);
+            }
+        }
+
+        function go(num) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('sec-' + num).classList.add('active');
+        }
+
+        function pilih(jawaban) {
+            aktivitas = jawaban;
+            const responses = {
+                'sekolah': "Wah, sesama student! 📚\nAku juga masih sekolah!",
+                'Kerja': "Wah, sudah kerja! 💼\nKerja apa? Kerenan!",
+                'Nganggur': "Wkwk, sama dong! 🎮\nBareng ngegame yok!"
+            };
+            alert("📝 JAWABAN: " + jawaban + "\n\n" + responses[jawaban] + "\n\nanjuttt...");
+            go(3);
+        }
+
+        function nextIG() {
+            usernameIG = document.getElementById('igUsername').value.replace('@', '');
+            if(usernameIG.trim() === "") {
+                alert("⚠️ Woi, IG-nya mana? 😳\nTulis dong!");
+                document.getElementById('igUsername').focus();
+                return;
+            }
+            alert("📱 Username: @" + usernameIG + "\n\nOke, data tersimpan!");
+            go(4);
+        }
+
+        // Prank buttons
+        function moveMau() {
+            failCount++;
+            if(failCount === 1) alert("Eh Eh, serius mau? 😳");
+            else if(failCount === 2) alert("Lucu ya kamu! 😏");
+            
+            const btn = document.getElementById('btn-mau');
+            btn.style.transform = `translate(${Math.random()*100-50}px, ${Math.random()*100-50}px)`;
+        }
+
+        function moveGak() {
+            const btn = document.getElementById('btn-gak');
+            btn.style.transform = `translate(${Math.random()*150-75}px, ${Math.random()*150-75}px)`;
+        }
+
+        // FINAL - Kirim data ke EmailJS
+        function terima() {
+            const confirm = window.confirm("🤔 Yakin mau kenalan?\n\nKlik OK jika ya!");
+            
+            if(confirm) {
+                alert("⏳ Mengirim data...");
+                
+                if(EMAILJS_CONFIG.publicKey !== "NrGWBxQIGbqh8GdNe") {
+                    const templateParams = {
+                        nama: namaSaya,
+                        aktivitas: aktivitas,
+                        instagram: usernameIG,
+                        waktu: new Date().toLocaleString('id-ID')
+                    };
+
+                    emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams)
+                    .then(function(response) {
+                        alert("🎉 Data terkirim!\n\nSekarang tunggu DM ya! 😊");
+                    }, function(error) {
+                        alert("⚠️ Gagal kirim, tapi lanjut aja! 😅");
+                    });
+                }
+                
+                document.getElementById('success-ig').innerText = usernameIG;
+                go('success');
+            }
+        }
+
+        function tolak() {
+            alert("Yah kok Gak Mau... 🥺\nYaudah, lain kali!");
+        }
+
+        function reset() { location.reload(); }
+    </script>
+</body>
+</html>
