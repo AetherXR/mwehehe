@@ -133,10 +133,9 @@
         const EMAILJS_CONFIG = {
             publicKey: "NrGWBxQIGbqh8GdNe",        
             serviceId: "service_r4upsr5",          
-            templateId: "template_i205qdh"         
+            templateId: "template_t2u5frr"         
         };
     </script>
-    <!-- ============================================= -->
 
     <div class="bg-emoji" style="top: 10%; left: 10%;">💕</div>
     <div class="bg-emoji" style="top: 20%; right: 15%;">❤️</div>
@@ -144,7 +143,6 @@
     <div class="bg-emoji" style="top: 80%; right: 10%;">💗</div>
 
     <div class="card">
-        <!-- Section 1: Nama Sendiri -->
         <div class="section active" id="sec-1">
             <h1>Halo! 👋</h1>
             <p>Ayo kenalan!<br>Nama kamu siapa?</p>
@@ -153,20 +151,18 @@
             <button class="btn" onclick="next(1)">Lanjut ➡️</button>
         </div>
 
-        <!-- Section 2: Aktivitas -->
         <div class="section" id="sec-2">
             <h1>Oke, <span id="name-1"></span>! 😅</h1>
             <p>Oke aku catet dulu yaa</p>
             <div class="emoji">🤔</div>
             <p><strong>Sekarang kesibukan kamu apa?</strong></p>
             <div class="options">
-                <button class="quiz-option" onclick="pilih('sekolah')">📚 sekolah</button>
+                <button class="quiz-option" onclick="pilih('Sekolah')">📚 Sekolah</button>
                 <button class="quiz-option" onclick="pilih('Kerja')">💼 Kerja</button>
                 <button class="quiz-option" onclick="pilih('Nganggur')">🎮 Nganggur</button>
             </div>
         </div>
 
-        <!-- Section 3: Instagram -->
         <div class="section" id="sec-3">
             <h1>Wah, jarang! 🔥</h1>
             <p>Ekhem, bisa kali ig nya...</p>
@@ -177,7 +173,6 @@
             <button class="btn" onclick="nextIG()">Simpan & Lanjut ➡️</button>
         </div>
 
-        <!-- Section 4: Ajak Kenalan -->
         <div class="section" id="sec-4">
             <h1>Hey <span id="name-2"></span>! 💫</h1>
             <p>Sekarang aku mau ngajak kamu...</p>
@@ -192,12 +187,11 @@
             </div>
         </div>
 
-        <!-- Success -->
         <div class="section" id="sec-success">
             <div class="emoji">🎉🥳🎉</div>
             <h1>SIAP!</h1>
             <p><strong>Kamu mau kenalan!</strong></p>
-            <p>IG: @<span id="success-ig"></span><br>Tungguaku DM ya! 😊</p>
+            <p>IG: @<span id="success-ig"></span><br>Tunggu aku DM ya! 😊</p>
             <button class="btn" onclick="reset()">Kenalan Lagi 🔄</button>
         </div>
     </div>
@@ -208,12 +202,12 @@
         let usernameIG = "";
         let failCount = 0;
 
-        // Initialize EmailJS
-        if(EMAILJS_CONFIG.publicKey !== "NrGWBxQIGbqh8GdNe") {
+        // Initialize EmailJS dengan cara BENAR
+        if(typeof emailjs !== 'undefined') {
             emailjs.init(EMAILJS_CONFIG.publicKey);
+            console.log("✅ EmailJS initialized");
         }
 
-        // Navigation
         function next(step) {
             if(step === 1) {
                 namaSaya = document.getElementById('myName').value;
@@ -237,7 +231,7 @@
         function pilih(jawaban) {
             aktivitas = jawaban;
             const responses = {
-                'sekolah': "Wah, sesama student! 📚\nAku juga masih sekolah!",
+                'Sekolah': "Wah, sesama student! 📚\nAku juga masih sekolah!",
                 'Kerja': "Wah, sudah kerja! 💼\nKerja apa? Kerenan!",
                 'Nganggur': "Wkwk, sama dong! 🎮\nBareng ngegame yok!"
             };
@@ -256,7 +250,6 @@
             go(4);
         }
 
-        // Prank buttons
         function moveMau() {
             failCount++;
             if(failCount === 1) alert("Eh Eh, serius mau? 😳");
@@ -271,28 +264,39 @@
             btn.style.transform = `translate(${Math.random()*150-75}px, ${Math.random()*150-75}px)`;
         }
 
-        // FINAL - Kirim data ke EmailJS
+        // ===== FUNGSI KIRIM EMAIL - PERBAIKAN ===== //
         function terima() {
             const confirm = window.confirm("🤔 Yakin mau kenalan?\n\nKlik OK jika ya!");
             
             if(confirm) {
                 alert("⏳ Mengirim data...");
                 
-                if(EMAILJS_CONFIG.publicKey !== "NrGWBxQIGbqh8GdNe") {
-                    const templateParams = {
-                        nama: namaSaya,
-                        aktivitas: aktivitas,
-                        instagram: usernameIG,
-                        waktu: new Date().toLocaleString('id-ID')
-                    };
+                // Buat object data SESUAI dengan template
+                var templateParams = {
+                    // Gunakan nama field yang SAMA dengan template EmailJS
+                    from_name: namaSaya,
+                    activity: aktivitas,
+                    instagram: usernameIG,
+                    time: new Date().toLocaleString('id-ID', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })
+                };
 
-                    emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams)
-                    .then(function(response) {
-                        alert("🎉 Data terkirim!\n\nSekarang tunggu DM ya! 😊");
-                    }, function(error) {
-                        alert("⚠️ Gagal kirim, tapi lanjut aja! 😅");
-                    });
-                }
+                console.log("📤 Sending:", templateParams);
+
+                // Kirim email
+                emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams)
+                .then(function(response) {
+                    console.log("✅ SUCCESS:", response.status);
+                    alert("🎉 Data terkirim!\n\nSekarang tunggu DM ya! 😊");
+                }, function(error) {
+                    console.log("❌ ERROR:", error);
+                    alert("⚠️ Gagal kirim, tapi lanjut! 😅");
+                });
                 
                 document.getElementById('success-ig').innerText = usernameIG;
                 go('success');
